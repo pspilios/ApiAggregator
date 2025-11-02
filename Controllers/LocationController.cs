@@ -7,44 +7,19 @@ namespace ApiAggregator.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private readonly HttpClient http;
-        private readonly ILogger<LocationController> logger;
-        private readonly IConfiguration config;
+        private readonly ILocationService locationService;
 
-        public LocationController(HttpClient htp, ILogger<LocationController> log, IConfiguration conf)
+        public LocationController(ILocationService ls)
         {
-            http = htp;
-            logger = log;
-            config = conf;
+            locationService = ls;
         }
 
         [HttpGet("{cityName}")]
         public async Task<dynamic> GetCoordinates(string cityName)
         {
-            try
-            {
-                var res = await http.GetFromJsonAsync<System.Text.Json.JsonElement[]>(config["ExternalApis:GeocoderApi"]
-                                       .Replace("{name}", Uri.EscapeDataString(cityName))
-                                       .Replace("{key}", Uri.EscapeDataString(config["ApiKeys:OpenWeatherKey"])));
+            var result = await locationService.GetCoordinates(cityName);
 
-                if (res.Equals("") || res.Length == 0)
-                {
-                    throw new Exception($"No result found for city name");
-                }
-
-                return res[0].GetProperty("name");
-            }
-            catch (HttpRequestException e)
-            {
-                // Network/HTTP error
-                Console.WriteLine($"HTTP request failed: {e.Message}");
-                return null;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"System threw exception: {e.Message}");
-                return null;
-            }
+            return Ok(result);
         }
     }
 }

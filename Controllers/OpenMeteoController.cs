@@ -15,7 +15,7 @@ namespace ApiAggregator.Controllers
         }
 
         [HttpGet("/GetOpenMeteo/{lat}/{lon}")]
-        public async Task<IActionResult> GetOpenMeteo(double lat, double lon)
+        public async Task<dynamic> GetOpenMeteo(double lat, double lon)
         {
             var result = await weatherService.GetOpenMeteo(lat, lon);
 
