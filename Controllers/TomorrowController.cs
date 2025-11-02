@@ -19,7 +19,7 @@ namespace ApiAggregator.Controllers
         {
             var result = await weatherService.GetTomorrow(lat, lon);
 
-            return Ok(result);
+            return result;
         }
     }
 }

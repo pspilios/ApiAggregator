@@ -17,6 +17,8 @@ builder.Services.AddHttpClient<IOpenWeatherService, OpenWeatherService>();
 
 builder.Services.AddHttpClient<ITomorrowService, TomorrowService>();
 
+builder.Services.AddHttpClient<ILocationService, LocationService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

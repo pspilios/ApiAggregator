@@ -1,6 +1,6 @@
 ﻿namespace ApiAggregator.Services
 {
-    public class LocationService
+    public class LocationService : ILocationService
     {
         private readonly HttpClient http;
         private readonly ILogger<LocationService> logger;
@@ -26,7 +26,7 @@
                     throw new Exception($"No result found for city name");
                 }
 
-                return res[0].GetProperty("name");
+                return res[0].GetProperty("lat").ToString() + "," + res[0].GetProperty("lon").ToString();
             }
             catch (HttpRequestException e)
             {

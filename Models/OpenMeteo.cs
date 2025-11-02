@@ -32,12 +32,7 @@ namespace ApiAggregator.Models
                 }
             }
 
-            JsonObject root = new JsonObject
-            {
-                ["OpenMeteo"] = result
-            };
-
-            using var doc = JsonDocument.Parse(root.ToJsonString());
+            using var doc = JsonDocument.Parse(result.ToJsonString());
             return doc.RootElement.Clone();
         }
 

@@ -19,12 +19,7 @@ namespace ApiAggregator.Models
                 result[prop.Name] = JsonNode.Parse(prop.Value.GetRawText());
             }
 
-            JsonObject root = new JsonObject
-            {
-                ["OpenWeather"] = result
-            };
-
-            using var doc = JsonDocument.Parse(root.ToJsonString());
+            using var doc = JsonDocument.Parse(result.ToJsonString());
             return doc.RootElement.Clone();
         }
     }

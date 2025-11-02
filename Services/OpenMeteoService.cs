@@ -43,7 +43,6 @@ namespace ApiAggregator.Services
                     throw new Exception($"No result found for coordinates");
                 }
 
-                //return res.GetProperty("current");
                 return ParseToOpenMeteo(res.GetProperty("current"), res.GetProperty("current_units"));
             }
             catch (HttpRequestException e)
