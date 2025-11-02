@@ -1,35 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using static ApiAggregator.Models.OpenWeather;
+using static ApiAggregator.Models.OpenMeteo;
 
 namespace ApiAggregator.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OpenWeatherController : ControllerBase
+    public class OpenMeteoController : ControllerBase
     {
         private readonly HttpClient http;
-        private readonly ILogger<OpenWeatherController> logger;
+        private readonly ILogger<OpenMeteoController> logger;
         private readonly IConfiguration config;
 
-        public OpenWeatherController(HttpClient htp, ILogger<OpenWeatherController> log, IConfiguration conf)
+        public OpenMeteoController(HttpClient htp, ILogger<OpenMeteoController> log, IConfiguration conf)
         {
             http = htp;
             logger = log;
             config = conf;
         }
 
-        [HttpGet("/GetOpenWeather/{lat}/{lon}")]
-        public async Task<dynamic> GetOpenWeather(double lat, double lon)
+        [HttpGet("/GetOpenMeteo/{lat}/{lon}")]
+        public async Task<dynamic> GetOpenMeteo(double lat, double lon)
         {
             try
             {
-                Console.WriteLine(config["ExternalApis:OpenWeatherApi"]
+                Console.WriteLine(config["ExternalApis:OpenMeteoApi"]
                                        .Replace("{lat}", lat.ToString(CultureInfo.InvariantCulture))
-                                       .Replace("{lon}", lon.ToString(CultureInfo.InvariantCulture))
-                                       .Replace("{key}", Uri.EscapeDataString(config["ApiKeys:OpenWeatherKey"])));
+                                       .Replace("{lon}", lon.ToString(CultureInfo.InvariantCulture)));
 
-                if(lat > 90 || lat < -90)
+                if (lat > 90 || lat < -90)
                 {
                     throw new Exception($"latitude must be within the range of -90 to 90 degrees");
                 }
@@ -39,17 +39,17 @@ namespace ApiAggregator.Controllers
                     throw new Exception($"longitude must be within the range of -180 to 180 degrees");
                 }
 
-                var res = await http.GetFromJsonAsync<System.Text.Json.JsonElement>(config["ExternalApis:OpenWeatherApi"]
+                var res = await http.GetFromJsonAsync<System.Text.Json.JsonElement>(config["ExternalApis:OpenMeteoApi"]
                                        .Replace("{lat}", lat.ToString(CultureInfo.InvariantCulture))
-                                       .Replace("{lon}", lon.ToString(CultureInfo.InvariantCulture))
-                                       .Replace("{key}", Uri.EscapeDataString(config["ApiKeys:OpenWeatherKey"])));
+                                       .Replace("{lon}", lon.ToString(CultureInfo.InvariantCulture)));
 
                 if (res.Equals(""))
                 {
                     throw new Exception($"No result found for coordinates");
                 }
 
-                return ParseToOpenWeather(res.GetProperty("weather")[0], res.GetProperty("main"));
+                //return res.GetProperty("current");
+                return ParseToOpenMeteo(res.GetProperty("current"), res.GetProperty("current_units"));
             }
             catch (HttpRequestException e)
             {

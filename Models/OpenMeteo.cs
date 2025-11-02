@@ -1,33 +1,76 @@
-﻿namespace ApiAggregator.Models
+﻿using System.Text.Json.Nodes;
+using System.Text.Json;
+
+namespace ApiAggregator.Models
 {
     public class OpenMeteo
     {
-        public int latitude { get; set; }
-        public float longitude { get; set; }
-        public float generationtime_ms { get; set; }
-        public int utc_offset_seconds { get; set; }
-        public string timezone { get; set; }
-        public string timezone_abbreviation { get; set; }
-        public int elevation { get; set; }
-        public Current_Units current_units { get; set; }
-        public Current current { get; set; }
-    }
+        public static JsonElement ParseToOpenMeteo(JsonElement curr, JsonElement curr_un)
+        {
+            JsonObject result = new JsonObject();
 
-    public class Current_Units
-    {
-        public string time { get; set; }
-        public string interval { get; set; }
-        public string temperature_2m { get; set; }
-        public string weather_code { get; set; }
-        public string wind_speed_10m { get; set; }
-    }
+            foreach (var prop in curr.EnumerateObject())
+            {
+                foreach (var prop2 in curr_un.EnumerateObject())
+                {
+                    if (prop.Name.Equals(prop2.Name) && !prop.Name.Equals("weather_code"))
+                    {
+                        result[prop.Name] = prop.Value.ToString() + " " + prop2.Value.ToString();
+                    }
 
-    public class Current
-    {
-        public string time { get; set; }
-        public int interval { get; set; }
-        public float temperature_2m { get; set; }
-        public int weather_code { get; set; }
-        public float wind_speed_10m { get; set; }
+                    if (prop.Name.Equals("weather_code"))
+                    {
+                        if (weatherCodes.TryGetValue(prop.Value.GetInt32(), out string desc))
+                        {
+                            result[prop.Name] = desc;
+                        }
+                        else
+                        {
+                            result[prop.Name] = "Unknown weather code";
+                        }
+                    }
+                }
+            }
+
+            JsonObject root = new JsonObject
+            {
+                ["OpenMeteo"] = result
+            };
+
+            using var doc = JsonDocument.Parse(root.ToJsonString());
+            return doc.RootElement.Clone();
+        }
+
+        static readonly Dictionary<int, string> weatherCodes = new()
+        {
+            { 0, "Clear Sky" },
+            { 1, "Mainly Clear" },
+            { 2, "Partly Cloudy" },
+            { 3, "Overcast" },
+            { 45, "Fog" },
+            { 48, "Rime Fog" },
+            { 51, "Light Drizzle" },
+            { 53, "Moderate Drizzle" },
+            { 55, "Dense Drizzle" },
+            { 56, "Light Freezing Drizzle" },
+            { 57, "Dense Freezing Drizzle" },
+            { 61, "Slight Rain" },
+            { 63, "Moderate Rain" },
+            { 65, "Heavy Rain" },
+            { 66, "Light Freezing Rain" },
+            { 67, "Heavy Freezing Rain" },
+            { 71, "Slight Snow Fall" },
+            { 73, "Moderate Snow Fall" },
+            { 75, "Heavy Snow Fall" },
+            { 77, "Snow Grains" },
+            { 80, "Slight Rain Shower" },
+            { 81, "Moderate Rain Shower" },
+            { 82, "Heavy Rain Shower" },
+            { 85, "Slight Snow Shower" },
+            { 86, "Heavy Snow Shower" },
+            { 95, "Slight-Moderate Thunderstorm" },
+            { 96, "Thunderstorm with slight hail" },
+            { 99, "Thunderstorm with heady hail" }
+        };
     }
 }
