@@ -11,15 +11,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMemoryCache();
 
-builder.Services.AddHttpClient<OpenMeteoClient>();
+builder.Services.AddHttpClient<IOpenMeteoService, OpenMeteoService>();
 
-builder.Services.AddHttpClient<OpenWeatherClient>();
+builder.Services.AddHttpClient<IOpenWeatherService, OpenWeatherService>();
 
-//builder.Services.AddHttpClient<IOpenWeatherClient, OpenWeatherClient>(client =>
-//{
-//    client.BaseAddress = new Uri(builder.Configuration["ExternalApis:ApiA"] ?? "https://api-a.example.com/");
-//    client.DefaultRequestHeaders.Add("Accept", "application/json");
-//}).AddPolicyHandler(HttpPolicies.GetDefaultPolicy());
+builder.Services.AddHttpClient<ITomorrowService, TomorrowService>();
 
 var app = builder.Build();
 
