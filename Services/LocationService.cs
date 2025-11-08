@@ -13,7 +13,7 @@
             config = conf;
         }
 
-        public async Task<dynamic> GetCoordinates(string cityName)
+        public async Task<string> GetCoordinates(string cityName)
         {
             try
             {

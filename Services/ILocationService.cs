@@ -2,6 +2,6 @@
 {
     public interface ILocationService
     {
-        Task<dynamic> GetCoordinates(string cityname);
+        Task<string> GetCoordinates(string cityname);
     }
 }
