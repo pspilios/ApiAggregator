@@ -32,7 +32,7 @@ Controllers to manually operate the API endpoints:
 - `OpenMeteoController` — Controller to use the [OpenMeteo](https://open-meteo.com/en/docs) service as stand alone.
 - `TomorrowController` — Controller to use the [Tomorrow](https://www.tomorrow.io/) service as stand alone.
 - `LocationController` — Controller to use the [Location](https://openweathermap.org/api/geocoding-api) service as stand alone.
-- `WeatherAggController` — Combines data from multiple services and returns the aggregated response.
+- `WeatherAggController` — Combines data from multiple services and returns the aggregated response using the WeatherAggService.
 
 ### Services
 
@@ -42,10 +42,12 @@ Services contains the interfaces of each service as well as the logic behind the
 - `IOpenMeteoService` — The Interface associated with the OpenMeteo service.
 - `IOpenWeatherService` — The Interface associated with the OpenWeather service.
 - `ITomorrowService` — The Interface associated with the Tomorrow service.
+- `IWeatherAggService` — The Interface associated with the WeatherAgg service.
 - `LocationService` — Handles calls to the Location API.
 - `OpenMeteoService` — Handles calls to the OpenMeteo API.
 - `OpenWeatherService` — Handles calls to the OpenWeather API.
 - `TomorrowService` — Handles calls to the Tomorrow API.
+- `WeatherAggService` — Handles calls to the WeatherAggService API.
 
 ### Models
 
